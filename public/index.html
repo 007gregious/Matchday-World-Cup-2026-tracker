@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Live World Cup 2026 table, fixtures, scores, scorers and discipline stats — built for low-bandwidth mobile use."
+    />
+    <meta name="theme-color" content="#0b1b23" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <title>Matchday — Live World Cup 2026 Tracker</title>
+
+    <!-- Set theme before first paint to avoid a flash of the wrong theme -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('matchday:theme');
+          var theme =
+            saved ||
+            (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          /* localStorage unavailable — default theme from CSS applies */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <div class="state-card" style="margin:24px;">
+        <span class="state-card__title">JavaScript required</span>
+        Matchday needs JavaScript enabled to fetch and display live football data.
+      </div>
+    </noscript>
+
+    <div class="app">
+      <header class="site-header">
+        <div class="site-header__top">
+          <div class="brand">
+            <span class="brand__name">Matchday</span>
+            <span class="brand__tag" id="competitionTag">WORLD CUP 26</span>
+          </div>
+          <div class="header-actions">
+            <button
+              id="themeBtn"
+              class="icon-btn"
+              type="button"
+              aria-pressed="false"
+              title="Switch theme"
+            >
+              <span id="themeIcon" aria-hidden="true">🌙</span>
+              <span class="visually-hidden">Switch between light and dark theme</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <label for="dataSaverToggle">Data saver — fewer automatic updates</label>
+          <span class="switch">
+            <input type="checkbox" id="dataSaverToggle" />
+            <span class="switch__track" aria-hidden="true"></span>
+          </span>
+        </div>
+
+        <div class="status-bar">
+          <span id="statusText">Loading…</span>
+          <button id="refreshBtn" class="refresh-btn" type="button">
+            <span class="refresh-icon" aria-hidden="true">⟳</span>
+            <span>Refresh</span>
+          </button>
+        </div>
+
+        <nav class="tabs" role="tablist" aria-label="Sections">
+          <button
+            class="tab"
+            role="tab"
+            id="tab-matches"
+            aria-controls="panel-matches"
+            aria-selected="true"
+            data-tab="matches"
+            type="button"
+          >
+            Matches
+          </button>
+          <button
+            class="tab"
+            role="tab"
+            id="tab-table"
+            aria-controls="panel-table"
+            aria-selected="false"
+            data-tab="table"
+            type="button"
+            tabindex="-1"
+          >
+            Table
+          </button>
+          <button
+            class="tab"
+            role="tab"
+            id="tab-scorers"
+            aria-controls="panel-scorers"
+            aria-selected="false"
+            data-tab="scorers"
+            type="button"
+            tabindex="-1"
+          >
+            Scorers
+          </button>
+          <button
+            class="tab"
+            role="tab"
+            id="tab-discipline"
+            aria-controls="panel-discipline"
+            aria-selected="false"
+            data-tab="discipline"
+            type="button"
+            tabindex="-1"
+          >
+            Discipline
+          </button>
+        </nav>
+      </header>
+
+      <main>
+        <section
+          class="panel"
+          id="panel-matches"
+          role="tabpanel"
+          aria-labelledby="tab-matches"
+        ></section>
+        <section
+          class="panel"
+          id="panel-table"
+          role="tabpanel"
+          aria-labelledby="tab-table"
+          hidden
+        ></section>
+        <section
+          class="panel"
+          id="panel-scorers"
+          role="tabpanel"
+          aria-labelledby="tab-scorers"
+          hidden
+        ></section>
+        <section
+          class="panel"
+          id="panel-discipline"
+          role="tabpanel"
+          aria-labelledby="tab-discipline"
+          hidden
+        ></section>
+      </main>
+
+      <footer class="site-footer">
+        Live data via <a href="https://www.football-data.org" target="_blank" rel="noopener">football-data.org</a><span
+          id="cardsCredit"
+        ></span>. Times shown in your device's local timezone.
+      </footer>
+    </div>
+
+    <script type="module" src="/js/app.js"></script>
+  </body>
+</html>
