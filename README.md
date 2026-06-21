@@ -4,7 +4,7 @@ A small, fast, **$0-to-run** web app for following the World Cup: a live group
 table, fixtures/results with kickoff times shown in *your* timezone, a
 goals & assists leaderboard, a yellow/red card leaderboard, a knockout
 bracket, your own score-prediction game, and push notifications for your
-favorite teams — all pulled from real, trusted data sources, and designed
+favorite teams all pulled from real, trusted data sources, and designed
 from the ground up to be gentle on mobile data.
 
 No build step, no framework, no database (beyond one small, free key-value
@@ -31,10 +31,10 @@ frontend renders them into a mobile-first, installable app.
   the device's native share sheet (or a direct download on desktop)
 - **Score predictions** — call your own scoreline for any match; scored
   automatically against real results (3 pts exact score, 1 pt correct
-  result). Entirely on your device — no accounts, no leaderboard
+  result). Entirely on your device no accounts, no leaderboard
 - **Push notifications** *(optional)* — kickoff reminders and goal alerts
   for your favorite teams, even when the app's closed. Needs two small,
-  free pieces of setup — see [Push notifications](#push-notifications-optional) below
+  free pieces of setup *see [Push notifications](#push-notifications-optional) below
 - **Offline-friendly** — the last data you saw stays available (with a
   clear "offline" banner) if your connection drops
 - **Dark/light theme**, installable to your home screen, looks right on
@@ -46,7 +46,7 @@ frontend renders them into a mobile-first, installable app.
 
 ## How it's built
 
-```
+```makefile
 Browser  <-- /api/* -->  Your Express server  <--->  football-data.org
  (polls the                 (caches + trims          (table, fixtures, scorers)
   active tab only)            responses)        <--->  API-FOOTBALL (cards only,
@@ -62,7 +62,7 @@ browser?
 
 - Your API keys stay server-side, never shipped to the browser.
 - One server-side cache serves every visitor/tab/device, so no matter how
-  often the UI polls, the upstream APIs get called far less — comfortably
+  often the UI polls, the upstream APIs get called far less comfortably
   inside both free tiers.
 - The server strips each response down to only the fields the UI uses,
   often cutting payload size by more than half before it ever reaches your
@@ -79,9 +79,9 @@ browser?
 
 ### Low-data techniques used throughout
 
-- Flags are rendered as **emoji**, not images — zero network requests, crisp
+- Flags are rendered as **emoji**, not images: zero network requests, crisp
   at any size, themeable for free.
-- **System fonts only** (`system-ui`, `ui-monospace`) — no font files to
+- **System fonts only** (`system-ui`, `ui-monospace`): no font files to
   download.
 - `compression` middleware **gzips every response**, JSON and static
   assets alike.
@@ -92,7 +92,7 @@ browser?
 - Polling **pauses while the page isn't visible** (screen off, app
   backgrounded, different browser tab).
 - A **"Data saver"** toggle (top of the page) roughly quarters every polling
-  interval — and turns itself on automatically if your browser reports
+  interval and turns itself on automatically if your browser reports
   `navigator.connection.saveData` or a 2G connection.
 
 ## Quick start
@@ -107,7 +107,7 @@ This app needs **one** key, and can optionally use a **second**:
   which the caching above keeps you nowhere near).
 - **Optional** — [API-FOOTBALL: register here](https://dashboard.api-football.com/register).
   Free, no card required, 100 requests/day. This only powers the
-  **Discipline** (cards) tab — football-data.org's plan doesn't include card
+  **Discipline** (cards) tab football-data.org's plan doesn't include card
   rankings. Everything else works fine without this.
 
 ### 2. Configure
@@ -117,7 +117,7 @@ cp .env.example .env
 ```
 
 Open `.env` and paste in your `FOOTBALL_DATA_TOKEN` (and `API_FOOTBALL_KEY`
-if you got one — leave it blank to skip the Discipline tab).
+if you got one leave it blank to skip the Discipline tab).
 
 ### 3. Run it
 
@@ -132,13 +132,13 @@ Open <http://localhost:3000>.
 `--watch`, no extra dependency).
 
 Favorites, calendar export, sharing, the bracket and the prediction game all
-work immediately with no extra setup — they're either pure client-side
+work immediately with no extra setup they're either pure client-side
 features or just different views of data you're already fetching.
 
 ## Push notifications (optional)
 
 Get a notification when a team you've starred is about to kick off, scores,
-or finishes a match — even if you don't have the app open. This is the one
+or finishes a match even if you don't have the app open. This is the one
 feature that needs two small pieces of free setup. Skip this section
 entirely if you don't want it: the rest of the app works exactly the same
 either way, and the notification bell in the header just stays hidden.
@@ -162,7 +162,7 @@ npm run vapid:generate
 
 This prints a `Public Key` and a `Private Key`. Paste them into `.env`:
 
-```
+```makefile
 VAPID_PUBLIC_KEY=<the public key>
 VAPID_PRIVATE_KEY=<the private key>
 VAPID_SUBJECT=mailto:you@example.com
@@ -175,22 +175,21 @@ ever misbehaves (e.g. sends too many notifications).
 ### Step 2 — create a free Upstash Redis database
 
 1. Go to [console.upstash.com](https://console.upstash.com) and sign up
-   (GitHub, Google, or email — **no credit card required**).
-2. **Create Database** → pick the **free tier** (500K commands/month, 256MB
-   — far more than a personal app needs) → choose any region close to where
+   (GitHub, Google, or email **no credit card required**).
+2. **Create Database** → pick the **free tier** (500K commands/month, 256MB far more than a personal app needs) → choose any region close to where
    your Render service will run.
 3. Open the database, find the **REST API** panel, and copy the two values
    into `.env`:
 
-```
+```makefile
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
 ```
 
 Restart the server (`npm start`). You should see:
 
-```
-🔔 Push notifications enabled — kickoff reminders + goal alerts for favorited teams.
+```bash
+🔔 Push notifications enabled kickoff reminders + goal alerts for favorited teams.
 ```
 
 The notification bell (🔕) now appears in the header. Star a team first
@@ -198,7 +197,7 @@ The notification bell (🔕) now appears in the header. Star a team first
 
 ### The one important catch — Render's free tier sleeping
 
-Push notifications are detected by a background loop on the *server* —
+Push notifications are detected by a background loop on the *server*
 it has to actually be running to notice a kickoff or a goal. Render's free
 tier sleeps after 15 minutes with no HTTP traffic, which pauses that loop
 along with everything else. If nobody's visited the site recently, a goal
@@ -217,13 +216,13 @@ instance-hours/month.
 Notifications are scoped to your **favorited teams only** (not every
 match) to avoid spamming you, and cover three moments: kickoff (~15 minutes
 before), a goal, and full time. The subscribe/unsubscribe endpoints have no
-authentication — fine for a personal app you're the only one using, not
+authentication fine for a personal app you're the only one using, not
 something you'd want to expose as a public multi-tenant service without
 adding some.
 
 ## Project structure
 
-```
+```makefile
 matchday-tracker/
 ├── server/
 │   ├── index.js              # Express app: static files, gzip, /healthz, push boot
@@ -296,10 +295,10 @@ holds them as environment variables instead (see below).
 **Option B — Blueprint**
 
 This repo includes `render.yaml`. In Render, choose **New** → **Blueprint**
-and point it at your repo — Render reads the file and creates the service
+and point it at your repo. Render reads the file and creates the service
 for you. You'll still be prompted to paste in `FOOTBALL_DATA_TOKEN` /
 `API_FOOTBALL_KEY` (and the five push notification variables, if you're
-using them) directly in the dashboard — they're all marked `sync: false`
+using them) directly in the dashboard they're all marked `sync: false`
 so none of them are ever stored in the repo.
 
 ### About Render's free tier
@@ -312,12 +311,12 @@ If you'd rather it stayed warm: a free uptime monitor (e.g.
 [cron-job.org](https://cron-job.org) or UptimeRobot) pinging
 `https://your-app.onrender.com/healthz` every 10 minutes will keep it awake.
 `/healthz` never calls football-data.org or API-FOOTBALL, so this costs
-**zero** API quota. Render's free plan includes 750 instance-hours/month —
+**zero** API quota. Render's free plan includes 750 instance-hours/month
 one service running 24/7 uses ~720-744 hours, so this still fits.
 
 **If you've enabled push notifications, this stops being optional.** The
 watcher that detects kickoffs and goals only runs while the server is
-awake — without a keep-alive pinger, notifications will mostly just not
+awake without a keep-alive pinger, notifications will mostly just not
 arrive while nobody's actively using the site. See
 [Push notifications](#push-notifications-optional) above for the full
 explanation.
@@ -331,16 +330,16 @@ you don't need to touch any code:
   competitions on their free plan have historically included `CL`
   (Champions League), `PL`/`PD`/`BL1`/`SA`/`FL1` (Premier League / La Liga /
   Bundesliga / Serie A / Ligue 1), `DED` (Eredivisie), `PPL` (Primeira Liga),
-  `ELC` (Championship), `EC` (Euros) and `BSA` (Brasileirão) — double-check
+  `ELC` (Championship), `EC` (Euros) and `BSA` (Brasileirão) double-check
   the current free list on football-data.org's pricing page, as plans can
   change.
-- **`API_FOOTBALL_LEAGUE_ID`** + **`API_FOOTBALL_SEASON`** — only used for
+- **`API_FOOTBALL_LEAGUE_ID`** + **`API_FOOTBALL_SEASON`** only used for
   the Discipline tab. Look up the league ID for your competition in
   [API-FOOTBALL's docs](https://www.api-football.com/documentation-v3).
 
 One thing to note: the **Table** tab is built for *group* standings. For a
 single-table league (e.g. Premier League) it'll still render correctly as
-one group — but for a pure-knockout competition there may be nothing to
+one group but for a pure-knockout competition there may be nothing to
 show there. The **Matches**, **Scorers** and **Discipline** tabs work for
 any competition.
 
@@ -372,14 +371,14 @@ any competition.
 - **Notification bell never appears** — needs `VAPID_PUBLIC_KEY` /
   `VAPID_PRIVATE_KEY` *and* `UPSTASH_REDIS_REST_URL` /
   `UPSTASH_REDIS_REST_TOKEN` all set, and the server restarted afterward.
-  Check the boot log — it tells you explicitly whether push is enabled.
+  Check the boot log it tells you explicitly whether push is enabled.
 - **Subscribed, but notifications aren't arriving** — almost always
   Render's free tier asleep when the event happened; see
   [the keep-alive note](#about-renders-free-tier). Also double-check you've
-  actually starred a team — notifications only fire for favorited teams.
+  actually starred a team notifications only fire for favorited teams.
 - **iOS notifications don't work at all** — Safari only supports web push
   for sites added to the home screen ("Add to Home Screen"), on iOS 16.4+.
-  Regular Safari tabs can't receive push notifications — this is an Apple
+  Regular Safari tabs can't receive push notifications this is an Apple
   platform limitation, not something this app can work around.
 
 ## Cost summary
@@ -395,4 +394,4 @@ any competition.
 
 ## License
 
-MIT — do whatever you like with it.
+MIT — Feel free to contribute to the this repo if you find this interesting and would love to take it one step further.
