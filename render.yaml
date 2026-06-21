@@ -32,3 +32,27 @@ services:
         sync: false
       - key: API_FOOTBALL_KEY
         sync: false
+      # Push notifications — all optional, leave unset in the Render
+      # dashboard to keep the feature disabled. See .env.example / README.
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        sync: false
+      - key: UPSTASH_REDIS_REST_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_TOKEN
+        sync: false
+      # Push notifications (optional) — leave unset in the Render dashboard
+      # to skip the feature entirely. See .env.example for what each does.
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        sync: false
+      - key: UPSTASH_REDIS_REST_URL
+        sync: false
+      - key: UPSTASH_REDIS_REST_TOKEN
+        sync: false

@@ -4,16 +4,16 @@ const express = require('express');
 const cache = require('../cache');
 const footballData = require('../providers/footballData');
 const apiFootball = require('../providers/apiFootball');
+const push = require('../lib/push');
+const store = require('../lib/store');
+const { getCachedMatches, isLiveCached } = require('../lib/matches');
 const {
   slimStandings,
-  slimMatches,
   slimScorers,
   slimCards,
 } = require('../lib/transform');
 
 const router = express.Router();
-
-const LIVE_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE']);
 
 // How long we trust our own cache before asking the upstream API again.
 // These numbers are deliberately conservative: football-data.org allows
@@ -21,8 +21,6 @@ const LIVE_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE']);
 // want to stay nowhere near either limit no matter how many people/tabs
 // are polling this server.
 const TTL = {
-  MATCHES_LIVE: 45 * 1000, // while any match is in play, refresh every 45s
-  MATCHES_IDLE: 5 * 60 * 1000, // otherwise, every 5 minutes
   STANDINGS: 5 * 60 * 1000, // table only changes when a match ends
   SCORERS: 10 * 60 * 1000, // goal/assist leaders change slowly
   CARDS: 3 * 60 * 60 * 1000, // cards change slowest of all — every 3 hours
@@ -57,19 +55,11 @@ router.get('/standings', async (req, res) => {
 
 router.get('/matches', async (req, res) => {
   try {
-    let matches = cache.get('matches');
-    if (!matches) {
-      const raw = await footballData.getMatches();
-      matches = slimMatches(raw);
-      const live = matches.some((m) => LIVE_STATUSES.has(m.status));
-      const ttl = live ? TTL.MATCHES_LIVE : TTL.MATCHES_IDLE;
-      cache.set('matches', matches, ttl);
-      cache.set('matchesLive', live, ttl);
-    }
+    const matches = await getCachedMatches();
     res.json({
       available: true,
       matches,
-      live: !!cache.get('matchesLive'),
+      live: isLiveCached(),
       updatedAt: cache.updatedAt('matches'),
     });
   } catch (err) {
@@ -120,6 +110,7 @@ router.get('/meta', (req, res) => {
   res.json({
     competition: footballData.competitionCode(),
     cardsEnabled: !!process.env.API_FOOTBALL_KEY,
+    pushEnabled: push.isConfigured() && store.isConfigured(),
     serverTime: new Date().toISOString(),
   });
 });

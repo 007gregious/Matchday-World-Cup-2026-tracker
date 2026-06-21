@@ -46,6 +46,17 @@
           </div>
           <div class="header-actions">
             <button
+              id="notifBtn"
+              class="icon-btn"
+              type="button"
+              aria-pressed="false"
+              hidden
+              title="Match notifications"
+            >
+              <span id="notifIcon" aria-hidden="true">🔕</span>
+              <span class="visually-hidden">Enable notifications for your favorite teams</span>
+            </button>
+            <button
               id="themeBtn"
               class="icon-btn"
               type="button"
@@ -101,6 +112,18 @@
           <button
             class="tab"
             role="tab"
+            id="tab-bracket"
+            aria-controls="panel-bracket"
+            aria-selected="false"
+            data-tab="bracket"
+            type="button"
+            tabindex="-1"
+          >
+            Bracket
+          </button>
+          <button
+            class="tab"
+            role="tab"
             id="tab-scorers"
             aria-controls="panel-scorers"
             aria-selected="false"
@@ -122,6 +145,18 @@
           >
             Discipline
           </button>
+          <button
+            class="tab"
+            role="tab"
+            id="tab-predict"
+            aria-controls="panel-predict"
+            aria-selected="false"
+            data-tab="predict"
+            type="button"
+            tabindex="-1"
+          >
+            Predict
+          </button>
         </nav>
       </header>
 
@@ -141,6 +176,13 @@
         ></section>
         <section
           class="panel"
+          id="panel-bracket"
+          role="tabpanel"
+          aria-labelledby="tab-bracket"
+          hidden
+        ></section>
+        <section
+          class="panel"
           id="panel-scorers"
           role="tabpanel"
           aria-labelledby="tab-scorers"
@@ -151,6 +193,13 @@
           id="panel-discipline"
           role="tabpanel"
           aria-labelledby="tab-discipline"
+          hidden
+        ></section>
+        <section
+          class="panel"
+          id="panel-predict"
+          role="tabpanel"
+          aria-labelledby="tab-predict"
           hidden
         ></section>
       </main>
